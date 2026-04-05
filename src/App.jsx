@@ -8,6 +8,8 @@ const FRIENDS = [
   { id: 5, name: "Riley", color: "#ec4899", avatar: "R" },
 ];
 
+const COLORS = ["#f97316","#3b82f6","#a855f7","#10b981","#ec4899","#f59e0b","#06b6d4","#ef4444"];
+
 const PRIVACY = ["Only me", "Free/Busy only", "All friends"];
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -77,8 +79,161 @@ function RsvpSummary({ eventId, rsvps }) {
   );
 }
 
+// ─── WELCOME SCREEN ───────────────────────────────────────────────
+function WelcomeScreen({ onEnter }) {
+  const [name, setName] = useState("");
+  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+  const [step, setStep] = useState(1); // 1 = welcome, 2 = name entry
+
+  const avatar = name.trim() ? name.trim()[0].toUpperCase() : "?";
+
+  const handleEnter = () => {
+    if (!name.trim()) return;
+    onEnter({ name: name.trim(), color: selectedColor, avatar });
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#0f0f13", fontFamily: "'DM Sans', sans-serif", color: "#f0ece4", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative", overflow: "hidden" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .welcome-card { animation: floatUp 0.6s ease forwards; }
+        @keyframes floatUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .glow-btn { transition: all 0.2s; border: none; cursor: pointer; }
+        .glow-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(249,115,22,0.4); }
+        .color-dot { cursor: pointer; transition: transform 0.15s; border: none; }
+        .color-dot:hover { transform: scale(1.15); }
+        input { outline: none; }
+        input:focus { border-color: #f97316 !important; }
+        .step-btn { cursor: pointer; transition: all 0.15s; border: none; }
+        .step-btn:hover { opacity: 0.8; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .float1 { animation: float1 6s ease-in-out infinite; }
+        .float2 { animation: float2 8s ease-in-out infinite; }
+        .float3 { animation: float3 7s ease-in-out infinite; }
+        @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+        @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+        @keyframes float3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+      `}</style>
+
+      {/* Background blobs */}
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none" }}>
+        <div style={{ position: "absolute", top: "10%", left: "15%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)" }} className="float1" />
+        <div style={{ position: "absolute", bottom: "15%", right: "10%", width: 250, height: 250, borderRadius: "50%", background: "radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%)" }} className="float2" />
+        <div style={{ position: "absolute", top: "50%", right: "25%", width: 200, height: 200, borderRadius: "50%", background: "radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%)" }} className="float3" />
+      </div>
+
+      <div className="welcome-card" style={{ maxWidth: 520, width: "100%", position: "relative", zIndex: 1 }}>
+
+        {step === 1 && (
+          <div style={{ textAlign: "center" }}>
+            {/* Demo badge */}
+            <div style={{ display: "inline-block", padding: "5px 14px", borderRadius: 20, background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.3)", color: "#f97316", fontSize: 12, fontWeight: 600, letterSpacing: "0.06em", marginBottom: 28 }}>
+              🚧 DEMO VERSION
+            </div>
+
+            {/* Logo */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 32 }}>
+              <div style={{ width: 52, height: 52, borderRadius: 16, background: "linear-gradient(135deg, #f97316, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26 }}>📅</div>
+              <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 36, fontWeight: 800, letterSpacing: "-1px" }}>FriendCal</span>
+            </div>
+
+            {/* Headline */}
+            <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 800, lineHeight: 1.2, marginBottom: 20, letterSpacing: "-0.5px" }}>
+              The world is going<br />
+              <span style={{ background: "linear-gradient(135deg, #f97316, #ec4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>a little crazy.</span>
+            </h1>
+
+            {/* Message */}
+            <p style={{ fontSize: 16, lineHeight: 1.75, color: "#aaa", marginBottom: 16, maxWidth: 420, margin: "0 auto 16px" }}>
+              Jobs, stress, life — it's a lot. But the people who matter most?
+              They're still out there. Still worth showing up for.
+            </p>
+
+            <p style={{ fontSize: 16, lineHeight: 1.75, color: "#aaa", marginBottom: 16, maxWidth: 420, margin: "0 auto 16px" }}>
+              <span style={{ color: "#f97316", fontWeight: 600 }}>FriendCal</span> is a simple way to see when your crew is free — so you can stop saying <em>"we should hang soon"</em> and actually make it happen.
+            </p>
+
+            <p style={{ fontSize: 15, lineHeight: 1.75, color: "#666", marginBottom: 40, maxWidth: 400, margin: "0 auto 40px" }}>
+              Because connection isn't a luxury right now. It's a lifeline. 💛<br/>
+              <span style={{ color: "#a855f7", fontWeight: 600 }}>PYT Quality Time</span> — let's protect it.
+            </p>
+
+            {/* Demo note */}
+            <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 14, padding: "14px 20px", marginBottom: 32, textAlign: "left" }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "#f97316", marginBottom: 6, letterSpacing: "0.05em" }}>📌 HEADS UP — THIS IS A DEMO</div>
+              <div style={{ fontSize: 13, color: "#666", lineHeight: 1.6 }}>Events and RSVPs won't save between visits yet. This is just a preview of what's coming. Try it out, share it with your crew, and let us know what you think!</div>
+            </div>
+
+            <button className="glow-btn" onClick={() => setStep(2)} style={{
+              padding: "16px 48px", borderRadius: 16, background: "linear-gradient(135deg, #f97316, #ec4899)",
+              color: "#fff", fontSize: 16, fontWeight: 700, fontFamily: "'DM Sans', sans-serif",
+              letterSpacing: "0.02em",
+            }}>Let's go 🙌</button>
+
+            <div style={{ marginTop: 16, fontSize: 12, color: "#444" }}>No account needed · No download · Just vibes</div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ textAlign: "center" }}>
+            <button className="step-btn" onClick={() => setStep(1)} style={{ background: "none", color: "#555", fontSize: 13, marginBottom: 28, display: "flex", alignItems: "center", gap: 6, margin: "0 auto 28px" }}>← Back</button>
+
+            <div style={{ marginBottom: 28 }}>
+              {/* Avatar preview */}
+              <div style={{ width: 72, height: 72, borderRadius: "50%", background: selectedColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 800, color: "#fff", margin: "0 auto 20px", transition: "background 0.2s", boxShadow: `0 0 30px ${selectedColor}60` }}>
+                {avatar}
+              </div>
+              <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Who are you? 👋</h2>
+              <p style={{ fontSize: 14, color: "#555" }}>Pick your name and a color so your crew knows it's you</p>
+            </div>
+
+            {/* Name input */}
+            <input
+              placeholder="Your name..."
+              value={name}
+              onChange={e => setName(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleEnter()}
+              maxLength={20}
+              style={{
+                width: "100%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 14, padding: "14px 18px", color: "#f0ece4", fontSize: 16,
+                fontFamily: "'DM Sans', sans-serif", marginBottom: 24, textAlign: "center",
+              }}
+            />
+
+            {/* Color picker */}
+            <div style={{ marginBottom: 32 }}>
+              <div style={{ fontSize: 12, color: "#555", marginBottom: 12, fontWeight: 500 }}>PICK YOUR COLOR</div>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+                {COLORS.map(c => (
+                  <button key={c} className="color-dot" onClick={() => setSelectedColor(c)} style={{
+                    width: 36, height: 36, borderRadius: "50%", background: c,
+                    border: selectedColor === c ? `3px solid #fff` : "3px solid transparent",
+                    boxShadow: selectedColor === c ? `0 0 16px ${c}` : "none",
+                    transition: "all 0.15s",
+                  }} />
+                ))}
+              </div>
+            </div>
+
+            <button className="glow-btn" onClick={handleEnter} disabled={!name.trim()} style={{
+              width: "100%", padding: "15px", borderRadius: 14, fontSize: 16, fontWeight: 700,
+              fontFamily: "'DM Sans', sans-serif", color: "#fff",
+              background: name.trim() ? "linear-gradient(135deg, #f97316, #ec4899)" : "rgba(255,255,255,0.08)",
+              opacity: name.trim() ? 1 : 0.5,
+            }}>Enter FriendCal ✨</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────
 export default function FriendCal() {
   const TODAY = getTodayStr();
+  const [currentUser, setCurrentUser] = useState(null); // null = show welcome
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(3);
   const [events, setEvents] = useState(INITIAL_EVENTS);
@@ -96,6 +251,17 @@ export default function FriendCal() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeTab, setActiveTab] = useState("calendar");
 
+  // Show welcome screen first
+  if (!currentUser) {
+    return <WelcomeScreen onEnter={(user) => setCurrentUser(user)} />;
+  }
+
+  // Merge current user into friends list
+  const allFriends = [
+    { id: 1, name: currentUser.name, color: currentUser.color, avatar: currentUser.avatar },
+    ...FRIENDS.slice(1),
+  ];
+
   const unreadCount = notifications.filter(n => !n.read).length;
   const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y-1); } else setMonth(m => m-1); };
   const nextMonth = () => { if (month === 11) { setMonth(0); setYear(y => y+1); } else setMonth(m => m+1); };
@@ -106,7 +272,7 @@ export default function FriendCal() {
     if (e.date !== dateStr) return false;
     if (e.ownerId === 1) return true;
     if (e.privacy === "Only me") return false;
-    if (activeFilter !== "All" && FRIENDS.find(f => f.name === activeFilter)?.id !== e.ownerId) return false;
+    if (activeFilter !== "All" && allFriends.find(f => f.name === activeFilter)?.id !== e.ownerId) return false;
     return true;
   });
 
@@ -134,10 +300,10 @@ export default function FriendCal() {
 
   const addEvent = () => {
     if (!newEvent.title.trim() || !selectedDay) return;
-    const ev = { id: Date.now(), title: newEvent.title, date: selectedDay, ownerId: 1, privacy: newEvent.privacy, groupEvent: newEvent.groupEvent, invitees: newEvent.invitees, color: "#f97316" };
+    const ev = { id: Date.now(), title: newEvent.title, date: selectedDay, ownerId: 1, privacy: newEvent.privacy, groupEvent: newEvent.groupEvent, invitees: newEvent.invitees, color: currentUser.color };
     setEvents(prev => [...prev, ev]);
     if (newEvent.groupEvent && newEvent.invitees.length > 0) {
-      const names = newEvent.invitees.map(id => FRIENDS.find(f => f.id === id)?.name).join(", ");
+      const names = newEvent.invitees.map(id => allFriends.find(f => f.id === id)?.name).join(", ");
       setNotifications(prev => [{ id: Date.now(), text: `You invited ${names} to "${newEvent.title}"`, time: "Just now", read: true }, ...prev]);
     }
     setNewEvent({ title: "", privacy: "All friends", groupEvent: false, invitees: [] });
@@ -203,8 +369,8 @@ export default function FriendCal() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ display: "flex", gap: 6 }}>
-            {["All", ...FRIENDS.slice(1).map(f => f.name)].map(name => {
-              const friend = FRIENDS.find(f => f.name === name);
+            {["All", ...allFriends.slice(1).map(f => f.name)].map(name => {
+              const friend = allFriends.find(f => f.name === name);
               const active = activeFilter === name;
               return (
                 <button key={name} className="friend-pill" onClick={() => setActiveFilter(name)} style={{
@@ -214,6 +380,11 @@ export default function FriendCal() {
                 }}>{name === "All" ? "👥 All" : name}</button>
               );
             })}
+          </div>
+
+          {/* Current user avatar */}
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: currentUser.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "#fff", cursor: "pointer", title: currentUser.name, boxShadow: `0 0 12px ${currentUser.color}60` }} onClick={() => setCurrentUser(null)} title="Change user">
+            {currentUser.avatar}
           </div>
 
           <div style={{ position: "relative" }}>
@@ -246,7 +417,7 @@ export default function FriendCal() {
         <aside style={{ width: 200, padding: "20px 14px", borderRight: "1px solid rgba(255,255,255,0.06)", flexShrink: 0, overflowY: "auto" }}>
           <div style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 10, fontWeight: 600, color: "#444", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>Group Members</div>
-            {FRIENDS.map(f => (
+            {allFriends.map(f => (
               <div key={f.id} style={{ display: "flex", alignItems: "center", gap: 9, padding: "7px 8px", borderRadius: 9, marginBottom: 2 }}>
                 <div style={{ width: 28, height: 28, borderRadius: "50%", background: f.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#fff", flexShrink: 0 }}>{f.avatar}</div>
                 <div>
@@ -264,6 +435,13 @@ export default function FriendCal() {
                 <div style={{ fontSize: 10, color: "#444" }}>{desc}</div>
               </div>
             ))}
+          </div>
+
+          {/* PYT QT badge */}
+          <div style={{ marginTop: 24, padding: "12px", borderRadius: 12, background: "linear-gradient(135deg, rgba(249,115,22,0.1), rgba(168,85,247,0.1))", border: "1px solid rgba(249,115,22,0.2)", textAlign: "center" }}>
+            <div style={{ fontSize: 16, marginBottom: 4 }}>💛</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#f97316", letterSpacing: "0.05em" }}>PYT Quality Time</div>
+            <div style={{ fontSize: 10, color: "#555", marginTop: 3 }}>Protect your connections</div>
           </div>
         </aside>
 
@@ -316,7 +494,7 @@ export default function FriendCal() {
                 <div style={{ marginBottom: 28 }}>
                   <div style={{ fontSize: 11, fontWeight: 600, color: "#f97316", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 12 }}>⏳ Awaiting Your Response ({pendingRsvps.length})</div>
                   {pendingRsvps.map(ev => {
-                    const owner = FRIENDS.find(f => f.id === ev.ownerId);
+                    const owner = allFriends.find(f => f.id === ev.ownerId);
                     return (
                       <div key={ev.id} className="summary-card" style={{ padding: "14px 16px", borderRadius: 14, background: "rgba(255,255,255,0.04)", borderLeft: `3px solid ${ev.color}`, marginBottom: 8 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -338,7 +516,7 @@ export default function FriendCal() {
                 {thisWeekEvents.length === 0
                   ? <div style={{ fontSize: 14, color: "#444", padding: "16px", borderRadius: 12, background: "rgba(255,255,255,0.03)", textAlign: "center" }}>Nothing on the schedule this week 🎉</div>
                   : thisWeekEvents.map(ev => {
-                    const owner = FRIENDS.find(f => f.id === ev.ownerId);
+                    const owner = allFriends.find(f => f.id === ev.ownerId);
                     const isBusy = ev.ownerId !== 1 && ev.privacy === "Free/Busy only";
                     return (
                       <div key={ev.id} className="summary-card" style={{ padding: "12px 16px", borderRadius: 12, background: "rgba(255,255,255,0.04)", borderLeft: `3px solid ${ev.color}`, marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -363,7 +541,7 @@ export default function FriendCal() {
                 {upcomingGroup.length === 0
                   ? <div style={{ fontSize: 14, color: "#444", padding: "16px", borderRadius: 12, background: "rgba(255,255,255,0.03)", textAlign: "center" }}>No group events coming up</div>
                   : upcomingGroup.map(ev => {
-                    const owner = FRIENDS.find(f => f.id === ev.ownerId);
+                    const owner = allFriends.find(f => f.id === ev.ownerId);
                     const myResponse = rsvps[ev.id]?.[1];
                     const counts = { going: 0, maybe: 0, no: 0 };
                     Object.values(rsvps[ev.id] || {}).forEach(v => { if (counts[v] !== undefined) counts[v]++; });
@@ -414,7 +592,7 @@ export default function FriendCal() {
                 <div style={{ textAlign: "center", color: "#444", fontSize: 14, padding: "20px 0" }}>Free day! 🎉</div>
               )}
               {dayEvents.map(ev => {
-                const owner = FRIENDS.find(f => f.id === ev.ownerId);
+                const owner = allFriends.find(f => f.id === ev.ownerId);
                 const isBusy = ev.ownerId !== 1 && ev.privacy === "Free/Busy only";
                 const canRsvp = ev.groupEvent && ev.invitees?.includes(1) && !isBusy;
                 return (
@@ -434,7 +612,7 @@ export default function FriendCal() {
                     </div>
                     {ev.invitees?.length > 0 && !isBusy && (
                       <div style={{ marginTop: 6, display: "flex", gap: 3, flexWrap: "wrap", alignItems: "center" }}>
-                        {ev.invitees.map(id => { const f = FRIENDS.find(fr => fr.id === id); return <div key={id} style={{ width: 18, height: 18, borderRadius: "50%", background: f?.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{f?.avatar}</div>; })}
+                        {ev.invitees.map(id => { const f = allFriends.find(fr => fr.id === id); return <div key={id} style={{ width: 18, height: 18, borderRadius: "50%", background: f?.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "#fff" }}>{f?.avatar}</div>; })}
                         <RsvpSummary eventId={ev.id} rsvps={rsvps} />
                       </div>
                     )}
@@ -459,7 +637,7 @@ export default function FriendCal() {
                     <div style={{ marginBottom: 8 }}>
                       <div style={{ fontSize: 11, color: "#555", marginBottom: 5 }}>Invite:</div>
                       <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-                        {FRIENDS.slice(1).map(f => { const inv = newEvent.invitees.includes(f.id); return <button key={f.id} className="btn" onClick={() => setNewEvent(p => ({ ...p, invitees: inv ? p.invitees.filter(id => id !== f.id) : [...p.invitees, f.id] }))} style={{ padding: "3px 9px", borderRadius: 20, fontSize: 12, fontFamily: "'DM Sans', sans-serif", background: inv ? `${f.color}30` : "rgba(255,255,255,0.05)", color: inv ? f.color : "#777", border: "1px solid " + (inv ? f.color : "rgba(255,255,255,0.1)") }}>{f.name}</button>; })}
+                        {allFriends.slice(1).map(f => { const inv = newEvent.invitees.includes(f.id); return <button key={f.id} className="btn" onClick={() => setNewEvent(p => ({ ...p, invitees: inv ? p.invitees.filter(id => id !== f.id) : [...p.invitees, f.id] }))} style={{ padding: "3px 9px", borderRadius: 20, fontSize: 12, fontFamily: "'DM Sans', sans-serif", background: inv ? `${f.color}30` : "rgba(255,255,255,0.05)", color: inv ? f.color : "#777", border: "1px solid " + (inv ? f.color : "rgba(255,255,255,0.1)") }}>{f.name}</button>; })}
                       </div>
                     </div>
                   )}
